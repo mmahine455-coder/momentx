@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MomentX - The Next-Gen Social Hub</title>
+  
+  <!-- Tailwind CSS & FontAwesome CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    :root {
+      --primary-accent: #a855f7; /* Default Neon Purple */
+      --glass-blur: 12px;
+      --glass-bg: rgba(18, 18, 24, 0.75);
+    }
+    
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .accent-bg { background-color: var(--primary-accent); }
+    .accent-text { color: var(--primary-accent); }
+    .accent-border { border-color: var(--primary-accent); }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #09090b; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+  </style>
+</head>
+<body class="h-screen flex flex-col md:flex-row overflow-hidden select-none">
+
+  <!-- 1. NAVIGATION BAR (Desktop Sidebar / Mobile Bottom Bar) -->
+  <aside class="glass-panel w-full md:w-64 flex-shrink-0 flex md:flex-col justify-between p-3 md:p-5 z-50 order-2 md:order-1 border-t md:border-t-0 md:border-r border-zinc-800">
+    <div class="flex flex-col w-full">
+      <div class="hidden md:flex items-center gap-3 mb-8 px-2">
+        <div class="w-10 h-10 rounded-xl accent-bg flex items-center justify-center font-bold text-xl text-black shadow-lg">X</div>
+        <h1 class="text-2xl font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500">MomentX</h1>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex md:flex-col justify-around w-full gap-1 md:gap-2">
+        <button onclick="switchTab('feedTab')" class="nav-btn active flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-800/50 transition accent-text">
+          <i class="fa-solid fa-house-chimney text-xl"></i>
+          <span class="hidden md:inline font-medium">Home Feed</span>
+        </button>
+        <button onclick="switchTab('reelsTab')" class="nav-btn flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-800/50 transition text-zinc-400">
+          <i class="fa-solid fa-clapperboard text-xl"></i>
+          <span class="hidden md:inline font-medium">Reels</span>
+        </button>
+        <button onclick="switchTab('chatTab')" class="nav-btn flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-800/50 transition text-zinc-400">
+          <i class="fa-solid fa-comments text-xl"></i>
+          <span class="hidden md:inline font-medium">Messages & Groups</span>
+        </button>
+        <button onclick="switchTab('searchTab')" class="nav-btn flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-800/50 transition text-zinc-400">
+          <i class="fa-solid fa-compass text-xl"></i>
+          <span class="hidden md:inline font-medium">AI Search</span>
+        </button>
+        <button onclick="switchTab('settingsTab')" class="nav-btn flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-800/50 transition text-zinc-400">
+          <i class="fa-solid fa-sliders text-xl"></i>
+          <span class="hidden md:inline font-medium">Settings</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- User Profile Footer -->
+    <div class="hidden md:flex items-center justify-between p-2 rounded-xl bg-zinc-900/60 border border-zinc-800/80">
+      <div class="flex items-center gap-3">
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=MomentXUser" class="w-9 h-9 rounded-full bg-zinc-800" />
+        <div>
+          <p class="text-sm font-semibold leading-none">Sheikh Kayes</p>
+          <span class="text-xs text-zinc-500">@kayes_creator</span>
+        </div>
+      </div>
+      <i class="fa-solid fa-circle-check text-xs accent-text"></i>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT DISPLAY AREA -->
+  <main class="flex-1 overflow-y-auto order-1 md:order-2 p-4 md:p-6 space-y-6 relative">
+
+    <!-- HEADER (Mobile Only) -->
+    <div class="flex md:hidden items-center justify-between pb-3 border-b border-zinc-800">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg accent-bg flex items-center justify-center font-bold text-black">X</div>
+        <h1 class="text-xl font-bold tracking-wider">MomentX</h1>
+      </div>
+      <img src="https://api.dicebear.com/7.x/bottts/svg?seed=MomentXUser" class="w-8 h-8 rounded-full bg-zinc-800" />
+    </div>
+
+    <!-- 1. HOME & MULTI-FEED VIEW -->
+    <section id="feedTab" class="tab-content max-w-2xl mx-auto space-y-6">
+      
+      <!-- Top Feeds Chip Filters -->
+      <div class="flex gap-2 overflow-x-auto pb-2 border-b border-zinc-800/60 no-scrollbar">
+        <button class="px-4 py-1.5 rounded-full accent-bg text-black font-semibold text-sm whitespace-nowrap">For You</button>
+        <button class="px-4 py-1.5 rounded-full bg-zinc-800 text-zinc-300 font-medium text-sm whitespace-nowrap hover:bg-zinc-700">Following</button>
+        <button class="px-4 py-1.5 rounded-full bg-zinc-800 text-zinc-300 font-medium text-sm whitespace-nowrap hover:bg-zinc-700">Tech & AI</button>
+        <button class="px-4 py-1.5 rounded-full bg-zinc-800 text-zinc-300 font-medium text-sm whitespace-nowrap hover:bg-zinc-700">Gaming</button>
+      </div>
+
+      <!-- Create Post Box with Gemini Caption -->
+      <div class="glass-panel rounded-2xl p-4 space-y-3">
+        <div class="flex items-start gap-3">
+          <img src="https://api.dicebear.com/7.x/bottts/svg?seed=MomentXUser" class="w-10 h-10 rounded-full bg-zinc-800" />
+          <textarea id="postInput" placeholder="What's happening in MomentX?" class="w-full bg-transparent border-none text-zinc-200 focus:outline-none resize-none h-20 text-sm"></textarea>
+        </div>
+        
+        <div class="flex items-center justify-between pt-2 border-t border-zinc-800/80">
+          <div class="flex gap-3 text-zinc-400">
+            <button title="Add Photo/Video"><i class="fa-regular fa-image hover:text-white"></i></button>
+            <button title="Voice Note"><i class="fa-solid fa-microphone hover:text-white"></i></button>
+            <button onclick="generateGeminiCaption()" title="Gemini AI Caption Assistant" class="accent-text flex items-center gap-1 text-xs font-semibold bg-purple-500/10 px-2 py-1 rounded-lg border border-purple-500/20">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Caption
+            </button>
+          </div>
+          <button onclick="createPost()" class="accent-bg text-black font-bold text-sm px-5 py-1.5 rounded-xl hover:opacity-90 transition">Post</button>
+        </div>
+      </div>
+
+      <!-- Feed Post Items -->
+      <div id="postsContainer" class="space-y-4">
+        <!-- Demo Post Card -->
+        <article class="glass-panel rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <img src="https://api.dicebear.com/7.x/bottts/svg?seed=GeminiBot" class="w-10 h-10 rounded-full bg-zinc-800" />
+              <div>
+                <h4 class="font-bold text-sm">MomentX AI <i class="fa-solid fa-badge-check accent-text"></i></h4>
+                <p class="text-xs text-zinc-500">2 hours ago</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-ellipsis-vertical text-zinc-500 cursor-pointer"></i>
+          </div>
+          <p class="text-sm text-zinc-300">Welcome to **MomentX**! 🚀 Experience AI-assisted feeds, custom theme styling, and lightning-fast direct messaging in one hub.</p>
+          <div class="flex items-center justify-between text-zinc-400 text-sm pt-2 border-t border-zinc-800/60">
+            <button class="hover:text-red-500 flex items-center gap-1.5"><i class="fa-regular fa-heart"></i> 124</button>
+            <button class="hover:text-blue-400 flex items-center gap-1.5"><i class="fa-regular fa-comment"></i> 18</button>
+            <button class="hover:text-green-400 flex items-center gap-1.5"><i class="fa-solid fa-retweet"></i> 5</button>
+            <button class="hover:text-amber-400 flex items-center gap-1.5"><i class="fa-regular fa-bookmark"></i></button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 2. REELS / SHORTS TAB -->
+    <section id="reelsTab" class="tab-content hidden h-full max-w-md mx-auto flex items-center justify-center">
+      <div class="glass-panel w-full h-[80vh] rounded-3xl relative overflow-hidden flex flex-col justify-end p-6 border border-zinc-700">
+        <video class="absolute inset-0 w-full h-full object-cover -z-10" autoplay loop muted src="https://assets.mixkit.co/videos/preview/mixkit-futuristic-city-with-traffic-41445-large.mp4"></video>
+        
+        <div class="space-y-2 text-white">
+          <div class="flex items-center gap-2">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=CyberUser" class="w-8 h-8 rounded-full" />
+            <span class="font-bold text-sm">@cyber_vibes</span>
+            <button class="text-xs bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/30">Follow</button>
+          </div>
+          <p class="text-xs text-zinc-200">Exploring futuristic themes on MomentX! 🌌 #Cyberpunk #Neon</p>
+        </div>
+
+        <!-- Floating Reels Actions -->
+        <div class="absolute right-4 bottom-12 flex flex-col items-center gap-5 text-white">
+          <button class="flex flex-col items-center gap-1"><i class="fa-solid fa-heart text-2xl text-red-500"></i><span class="text-xs">4.2k</span></button>
+          <button class="flex flex-col items-center gap-1"><i class="fa-solid fa-comment text-2xl"></i><span class="text-xs">312</span></button>
+          <button class="flex flex-col items-center gap-1"><i class="fa-solid fa-share text-2xl"></i><span class="text-xs">Share</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. CHAT & GROUP MESSAGING TAB -->
+    <section id="chatTab" class="tab-content hidden max-w-4xl mx-auto h-[80vh] glass-panel rounded-2xl flex overflow-hidden">
+      <!-- Chat List Sidebar -->
+      <div class="w-1/3 border-r border-zinc-800 p-3 space-y-3 flex flex-col">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-lg">Chats</h3>
+          <button class="accent-text text-sm"><i class="fa-solid fa-user-plus"></i></button>
+        </div>
+        <div class="space-y-2 overflow-y-auto flex-1">
+          <div class="flex items-center gap-3 p-2 rounded-xl bg-zinc-800/40 cursor-pointer">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=GroupX" class="w-10 h-10 rounded-full" />
+            <div class="hidden md:block">
+              <h5 class="text-sm font-semibold">MomentX Dev Squad</h5>
+              <p class="text-xs text-zinc-400 truncate">Sheikh: HTML structure is ready!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Chat Window -->
+      <div class="flex-1 flex flex-col justify-between p-4 bg-zinc-950/40">
+        <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+          <div class="flex items-center gap-3">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=GroupX" class="w-9 h-9 rounded-full" />
+            <div>
+              <h4 class="font-bold text-sm">MomentX Dev Squad</h4>
+              <span class="text-xs accent-text">4 members online</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="chatMessages" class="flex-1 my-4 space-y-3 overflow-y-auto">
+          <div class="bg-zinc-800 p-3 rounded-2xl max-w-xs text-xs text-zinc-200">
+            Welcome to the official MomentX developer group chat!
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input id="chatInput" type="text" placeholder="Type a message..." class="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2 text-sm focus:outline-none" />
+          <button onclick="sendMessage()" class="accent-bg text-black p-2.5 rounded-xl"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. AI SEARCH (GOOGLE GROUNDED) -->
+    <section id="searchTab" class="tab-content hidden max-w-2xl mx-auto space-y-4">
+      <div class="glass-panel p-4 rounded-2xl flex items-center gap-3">
+        <i class="fa-solid fa-magnifying-glass text-zinc-400"></i>
+        <input id="searchInput" type="text" placeholder="Ask AI or search real-time news..." class="w-full bg-transparent text-sm focus:outline-none" />
+        <button onclick="performAISearch()" class="accent-bg text-black text-xs font-bold px-4 py-2 rounded-xl">Search</button>
+      </div>
+
+      <div id="searchResults" class="glass-panel rounded-2xl p-5 min-h-[200px] text-sm text-zinc-300">
+        <p class="text-zinc-500 text-center">Type any query above to search using Gemini & Google Search Grounding.</p>
+      </div>
+    </section>
+
+    <!-- 5. CUSTOM SETTINGS & THEME CUSTOMIZER -->
+    <section id="settingsTab" class="tab-content hidden max-w-2xl mx-auto space-y-6">
+      <h2 class="text-xl font-bold border-b border-zinc-800 pb-2">App Settings & Customization</h2>
+
+      <!-- Theme Color Selector -->
+      <div class="glass-panel rounded-2xl p-5 space-y-3">
+        <h3 class="font-semibold text-sm">Accent Color Preset</h3>
+        <div class="flex gap-3">
+          <button onclick="setAccentColor('#a855f7')" class="w-8 h-8 rounded-full bg-purple-500 ring-2 ring-white/20"></button>
+          <button onclick="setAccentColor('#06b6d4')" class="w-8 h-8 rounded-full bg-cyan-500 ring-2 ring-white/20"></button>
+          <button onclick="setAccentColor('#10b981')" class="w-8 h-8 rounded-full bg-emerald-500 ring-2 ring-white/20"></button>
+          <button onclick="setAccentColor('#f43f5e')" class="w-8 h-8 rounded-full bg-rose-500 ring-2 ring-white/20"></button>
+          <button onclick="setAccentColor('#eab308')" class="w-8 h-8 rounded-full bg-yellow-500 ring-2 ring-white/20"></button>
+        </div>
+      </div>
+
+      <!-- UI Blur Adjustment -->
+      <div class="glass-panel rounded-2xl p-5 space-y-3">
+        <h3 class="font-semibold text-sm">Glassmorphism Blur</h3>
+        <input type="range" min="0" max="25" value="12" class="w-full accent-purple-500" onchange="document.documentElement.style.setProperty('--glass-blur', this.value + 'px')" />
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FIREBASE & GEMINI SCRIPT INTEGRATION -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+    // Provided Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyC0c1BPUfPEnmdgkjlbdNwNmYNUZ55vZo4",
+      authDomain: "momentx-b1db0.firebaseapp.com",
+      projectId: "momentx-b1db0",
+      storageBucket: "momentx-b1db0.firebasestorage.app",
+      messagingSenderId: "310279217125",
+      appId: "1:310279217125:web:3828eec204552954f8190c",
+      measurementId: "G-FXBM7B807V"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    // Cloudinary & Gemini Credentials Configured
+    window.GEMINI_API_KEY = "AQ.Ab8RN6JDZpukw6szyeeXR6iBqLT02TlQuK46hn2I1fxQG4KPlg";
+    window.CLOUDINARY_KEY = "hqqCQAChKaYe8AN7_T0HV-pEbUg";
+  </script>
+
+  <script>
+    // Tab Navigation Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('accent-text');
+        btn.classList.add('text-zinc-400');
+      });
+      event.currentTarget.classList.add('accent-text');
+      event.currentTarget.classList.remove('text-zinc-400');
+    }
+
+    // Dynamic Theme Color Switcher
+    function setAccentColor(colorHex) {
+      document.documentElement.style.setProperty('--primary-accent', colorHex);
+      localStorage.setItem('momentx_accent', colorHex);
+    }
+
+    // Gemini Caption Assistant Call
+    async function generateGeminiCaption() {
+      const postText = document.getElementById('postInput').value;
+      if (!postText) return alert("অনুগ্রহ করে ক্যাপশনের জন্য কিছু লিখুন!");
+
+      const btn = event.currentTarget;
+      btn.innerText = "Generating...";
+
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${window.GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: `Generate a short viral social media caption with emojis & hashtags based on: ${postText}` }] }]
+          })
+        });
+        const data = await res.json();
+        const caption = data.candidates[0].content.parts[0].text;
+        document.getElementById('postInput').value = caption;
+      } catch(e) {
+        alert("Gemini AI API Error: Check key settings.");
+      } finally {
+        btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> AI Caption`;
+      }
+    }
+
+    // Gemini Search Function (Google Search Grounding)
+    async function performAISearch() {
+      const query = document.getElementById('searchInput').value;
+      const resContainer = document.getElementById('searchResults');
+      if (!query) return;
+
+      resContainer.innerHTML = "Searching live Google data via Gemini...";
+
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${window.GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: query }] }],
+            tools: [{ googleSearch: {} }]
+          })
+        });
+        const data = await res.json();
+        resContainer.innerHTML = `<p class="leading-relaxed">${data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>')}</p>`;
+      } catch(e) {
+        resContainer.innerHTML = "Search error or API key restriction.";
+      }
+    }
+
+    // Local Chat Handler
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      if (!input.value.trim()) return;
+
+      const container = document.getElementById('chatMessages');
+      const msg = document.createElement('div');
+      msg.className = "bg-purple-600/30 border border-purple-500/30 ml-auto p-3 rounded-2xl max-w-xs text-xs text-zinc-100";
+      msg.innerText = input.value;
+      container.appendChild(msg);
+      input.value = "";
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Simple Post Creator
+    function createPost() {
+      const text = document.getElementById('postInput').value;
+      if(!text) return;
+
+      const postsContainer = document.getElementById('postsContainer');
+      const article = document.createElement('article');
+      article.className = "glass-panel rounded-2xl p-4 space-y-3";
+      article.innerHTML = `
+        <div class="flex items-center gap-3">
+          <img src="https://api.dicebear.com/7.x/bottts/svg?seed=MomentXUser" class="w-10 h-10 rounded-full bg-zinc-800" />
+          <div>
+            <h4 class="font-bold text-sm">Sheikh Kayes</h4>
+            <p class="text-xs text-zinc-500">Just now</p>
+          </div>
+        </div>
+        <p class="text-sm text-zinc-300">${text}</p>
+      `;
+      postsContainer.prepend(article);
+      document.getElementById('postInput').value = "";
+    }
+
+    // Load Saved Accent
+    const savedAccent = localStorage.getItem('momentx_accent');
+    if (savedAccent) setAccentColor(savedAccent);
+  </script>
+</body>
+  </html>
